@@ -5,8 +5,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './login-page/login/login.component';
 import { SignupComponent } from './sign-up-page/add/add.component';
-import { ViewComponent } from './home-page/view/view.component';
-
+import { HomeViewComponent } from './home-page/view/view.component';
+import { GameViewComponent } from './game-page/view/view.component';
 
 
 @NgModule({
@@ -14,7 +14,8 @@ import { ViewComponent } from './home-page/view/view.component';
     AppComponent,
     LoginComponent,
     SignupComponent,
-    ViewComponent
+    HomeViewComponent,
+    GameViewComponent
   ],
   imports: [
     BrowserModule,

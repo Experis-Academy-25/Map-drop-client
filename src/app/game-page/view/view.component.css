@@ -1,0 +1,115 @@
+.container {
+    display: flex;
+    height: 100vh;
+    padding: 10px;
+    position: relative; /* Add relative positioning to the container */
+  }
+  
+  .exit-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: rgba(255, 0, 0, 0.5); /* Semi-transparent red background */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.8; /* Make the button somewhat transparent */
+  }
+  
+  .exit-button:hover {
+    opacity: 1; /* Fully opaque on hover */
+  }
+  
+  .main-container {
+    flex: 4;
+    background-color: lightgray;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Center the content horizontally */
+  }
+  
+  .submit-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  .submit-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .right-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-left: 1rem;
+  }
+  
+  .top-right-container {
+    background-color: lightblue;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    flex-grow: 1; /* Allow the top container to take up the remaining space */
+  }
+  
+  .bottom-right-container {
+    background-color: lightgreen;
+    margin-top: 10px; /* Add margin to create space between the containers */
+    aspect-ratio: 1 / 1; /* Make the container a square */
+    width: 100%; /* Ensure the width is 100% of the parent container */
+    border-radius: 10px; /* Add rounded corners */
+  }
+  
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+  }

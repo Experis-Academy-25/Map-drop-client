@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { HomeViewComponent } from './view/view.component';
+import { GameViewComponent } from './view/view.component';
 
 
 
 @NgModule({
   declarations: [
-    HomeViewComponent
+    GameViewComponent
   ],
   imports: [
     CommonModule
   ]
 })
-export class HomePageModule { }
+export class GamePageModule { }

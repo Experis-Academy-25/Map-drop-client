@@ -1,0 +1,41 @@
+<div class="container">
+    <!-- Exit Button -->
+    <button class="exit-button" (click)="showExitConfirmation()">Exit</button>
+  
+    <!-- Main Container -->
+    <div class="main-container">
+      <!-- Content for the main container -->
+      <p>Main Container</p>
+      <!-- Conditional Submit Button -->
+      <button *ngIf="condition" class="submit-button">Submit</button>
+    </div>
+  
+    <!-- Right Containers -->
+    <div class="right-container">
+      <!-- Top Right Container -->
+      <div class="top-right-container">
+        <h2>Points: {{ points }}</h2>
+        <p>{{ hints[currentHintIndex].text }}</p>
+        <a [href]="hints[currentHintIndex].link">{{ hints[currentHintIndex].link }}</a>
+        <div class="button-container">
+          <button (click)="previousHint()">Button 1</button>
+          <button (click)="nextHint()">Button 2</button>
+        </div>
+      </div>
+  
+      <!-- Bottom Right Container -->
+      <div class="bottom-right-container">
+        <!-- Content for the bottom right container -->
+        <p>Bottom Right Container</p>
+      </div>
+    </div>
+  
+    <!-- Exit Confirmation Modal -->
+    <div *ngIf="showModal" class="modal">
+      <div class="modal-content">
+        <p>Are you sure?</p>
+        <button (click)="confirmExit()">Yes</button>
+        <button (click)="cancelExit()">No</button>
+      </div>
+    </div>
+  </div>
