@@ -7,8 +7,8 @@
     </div>
     <div class="main-menu">
       <h2 class="game-modes-title">Game Modes</h2>
-      <button class="menu-button">Find the City</button>
-      <button class="menu-button">Find the Country</button>
+      <button class="menu-button" routerLink="/game">Find the City</button>
+      <button class="menu-button" routerLink="/game">Find the Country</button>
       <p class="playing-as">Playing as {{ username }}</p>
       <button *ngIf="username === 'Guest'" class="login-button" routerLink="/login">Login</button>
     </div>
