@@ -1,0 +1,25 @@
+<div class="home-container">
+    <div class="leaderboard">
+      <h2>Leaderboard</h2>
+      <ul>
+        <li *ngFor="let user of leaderboard">{{ user }}</li>
+      </ul>
+    </div>
+    <div class="main-menu">
+      <h2 class="game-modes-title">Game Modes</h2>
+      <button class="menu-button">Find the City</button>
+      <button class="menu-button">Find the Country</button>
+      <p class="playing-as">Playing as {{ username }}</p>
+      <button *ngIf="username === 'Guest'" class="login-button" routerLink="/login">Login</button>
+    </div>
+    <div class="latest-games">
+      <h2>Latest Games</h2>
+      <ul>
+        <li *ngFor="let game of latestGames">
+          <p>Points: {{ game.points }}</p>
+          <p>Location: {{ game.location }}</p>
+          <p>Time Spent: {{ game.timeSpent }}</p>
+        </li>
+      </ul>
+    </div>
+  </div>
