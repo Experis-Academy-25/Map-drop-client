@@ -8,6 +8,7 @@ import { AddComponent } from './sign-up-page/add/add.component';
 import { HomeViewComponent } from './home-page/view/view.component';
 import { GameViewComponent } from './game-page/view/view.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideHttpClient } from '@angular/common/http';
 
 
 @NgModule({
@@ -23,7 +24,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [provideHttpClient()],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
