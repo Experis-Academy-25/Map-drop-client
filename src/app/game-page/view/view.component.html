@@ -6,7 +6,9 @@
   <div class="main-container">
     <!-- Content for the main container -->
     <!-- Conditional Submit Button -->
-    <button *ngIf="condition" class="submit-button">Submit</button>
+    <button *ngIf="condition" class="submit-button" (click)="submitGuess()">
+      Submit
+    </button>
     <div id="streetview"></div>
   </div>
 
