@@ -35,10 +35,11 @@ export class GameViewComponent {
   ];
 
   constructor(private router: Router) {
+    this.initStreetView();
     this.initMap();
   }
 
-  initMap(): void {
+  initStreetView(): void {
     let panorama: any;
 
     const astorPlace = { lat: 40.729884, lng: -73.990988 };
@@ -46,7 +47,7 @@ export class GameViewComponent {
       .importLibrary('streetView')
       .then(({ StreetViewPanorama }) => {
         panorama = new StreetViewPanorama(
-          document.getElementById('map') as HTMLElement,
+          document.getElementById('streetview') as HTMLElement,
           {
             position: astorPlace,
             zoom: 18,
@@ -63,6 +64,28 @@ export class GameViewComponent {
         );
         panorama.setAddressControlOptions(false);
         panorama.setVisible(true);
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  initMap(): void {
+    let map: any;
+
+    const astorPlace = { lat: 40.729884, lng: -73.990988 };
+    this.loader
+      .importLibrary('maps')
+      .then(({ Map }) => {
+        map = new Map(document.getElementById('map') as HTMLElement, {
+          center: astorPlace,
+          zoom: 1.5,
+          mapTypeControl: false,
+          streetViewControl: false,
+        });
+
+        map.setPosition(astorPlace);
+        map.setVisible(true);
       })
       .catch((e) => {
         console.log(e);
