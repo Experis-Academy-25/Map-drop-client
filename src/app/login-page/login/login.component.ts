@@ -28,12 +28,19 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const { username, password } = this.loginForm.value;
-
+  
       this.loginService.login({ username, password }).subscribe({
         next: (response: any) => {
           // Handle successful login
           console.log('Login successful:', response);
-          this.router.navigate(['/home']); // Redirect to home page
+  
+          // Save the token and user information to localStorage
+          localStorage.setItem('token', response.token); // Save the bearer token
+          localStorage.setItem('id', response.id); // Save user-id
+          localStorage.setItem('username', response.username); // Save username
+  
+          // Redirect to the home page
+          this.router.navigate(['/home']);
         },
         error: (error) => {
           // Handle login error

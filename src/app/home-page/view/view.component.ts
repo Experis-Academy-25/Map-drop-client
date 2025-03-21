@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { HomePageService } from '../../home-page.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view',
@@ -7,13 +9,46 @@ import { Component } from '@angular/core';
   styleUrls: ['./view.component.css']
 })
 export class HomeViewComponent {
+  homePageService = inject(HomePageService);
+  latestGamesList: any[] = []; // Array to store the latest games
+  username = localStorage.getItem('username'); 
+
   leaderboard = ['User1', 'User2', 'User3', 'User4', 'User5', 'User6', 'User7', 'User8', 'User9', 'User10'];
-  latestGames = [
+//  latestGames = this.homePageService.getMatchHistory();
+  
+  constructor(private router: Router) {}
+
+  ngOnInit(): void {
+    this.checkUsername();
+    // Subscribe to the latestGames observable
+    this.homePageService.getMatchHistory().subscribe({
+      next: (games) => {
+        this.latestGamesList = games.data; // Store the emitted data
+      },
+      error: (err) => {
+        console.error('Error fetching latest games:', err);
+      }
+    });
+  }
+  /*[
     { points: 100, location: 'New York, USA', timeSpent: '5 mins' },
     { points: 90, location: 'London, UK', timeSpent: '4 mins' },
     { points: 80, location: 'Paris, France', timeSpent: '6 mins' },
     { points: 70, location: 'Berlin, Germany', timeSpent: '7 mins' },
     { points: 60, location: 'Tokyo, Japan', timeSpent: '8 mins' }
-  ];
-  username = 'Guest'; // Replace with actual username logic
+  ]; */
+
+  checkUsername(){
+    
+    if(!this.username){
+      this.username = 'Guest';
+    }
+  }
+  logout(): void {
+    // Clear localStorage
+    localStorage.clear();
+  
+    // Refresh the page
+    window.location.reload();
+  }
 }

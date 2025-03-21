@@ -8,8 +8,8 @@ import { AddComponent } from './sign-up-page/add/add.component';
 import { HomeViewComponent } from './home-page/view/view.component';
 import { GameViewComponent } from './game-page/view/view.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { provideHttpClient } from '@angular/common/http';
-
+import { HTTP_INTERCEPTORS, provideHttpClient } from '@angular/common/http';
+import { AuthInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -17,14 +17,13 @@ import { provideHttpClient } from '@angular/common/http';
     LoginComponent,
     AddComponent,
     HomeViewComponent,
-    GameViewComponent
+    GameViewComponent,
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    ReactiveFormsModule
+  imports: [BrowserModule, AppRoutingModule, ReactiveFormsModule],
+  providers: [
+    provideHttpClient(),
+    { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   ],
-  providers: [provideHttpClient()],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
