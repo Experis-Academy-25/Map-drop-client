@@ -6,16 +6,14 @@ import { Router } from '@angular/router';
   selector: 'app-view',
   standalone: false,
   templateUrl: './view.component.html',
-  styleUrls: ['./view.component.css']
+  styleUrls: ['./view.component.css'],
 })
 export class HomeViewComponent {
   homePageService = inject(HomePageService);
   latestGamesList: any[] = []; // Array to store the latest games
-  username = localStorage.getItem('username'); 
+  username = localStorage.getItem('username');
+  leaderboard: any[] = [];
 
-  leaderboard = ['User1', 'User2', 'User3', 'User4', 'User5', 'User6', 'User7', 'User8', 'User9', 'User10'];
-//  latestGames = this.homePageService.getMatchHistory();
-  
   constructor(private router: Router) {}
 
   ngOnInit(): void {
@@ -27,7 +25,16 @@ export class HomeViewComponent {
       },
       error: (err) => {
         console.error('Error fetching latest games:', err);
-      }
+      },
+    });
+
+    this.homePageService.getLeaderboard().subscribe({
+      next: (users) => {
+        this.leaderboard = users.data;
+      },
+      error: (err) => {
+        console.error('Error fetching leaderboard:', err);
+      },
     });
   }
   /*[
@@ -38,16 +45,15 @@ export class HomeViewComponent {
     { points: 60, location: 'Tokyo, Japan', timeSpent: '8 mins' }
   ]; */
 
-  checkUsername(){
-    
-    if(!this.username){
+  checkUsername() {
+    if (!this.username) {
       this.username = 'Guest';
     }
   }
   logout(): void {
     // Clear localStorage
     localStorage.clear();
-  
+
     // Refresh the page
     window.location.reload();
   }
