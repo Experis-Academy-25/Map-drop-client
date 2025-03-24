@@ -1,25 +1,40 @@
 <div class="home-container">
-    <div class="leaderboard">
-      <h2>Leaderboard</h2>
-      <ul>
-        <li *ngFor="let user of leaderboard">{{ user }}</li>
-      </ul>
-    </div>
-    <div class="main-menu">
-      <h2 class="game-modes-title">Game Modes</h2>
-      <button class="menu-button" routerLink="/game">Find the City</button>
-      <button class="menu-button" routerLink="/game">Find the Country</button>
-      <p class="playing-as">Playing as {{ username }}</p>
-      <button *ngIf="username === 'Guest' || username === null " class="login-button" routerLink="/login">Login</button>
-      <button *ngIf="username !== 'Guest' && username !== null" class="logout-button" (click)="logout()">Logout</button>
-    </div>
-    <div class="latest-games">
-      <h2>Latest Games</h2>
-      <ul>
-        <li *ngFor="let game of latestGamesList">
-          <p>Points: {{ game.points }}</p>
-          <p>Location: {{ game.location }}</p>
-        </li>
-      </ul>
-    </div>
+  <div class="leaderboard">
+    <h2>Leaderboard</h2>
+    <ul>
+      <li *ngFor="let user of leaderboard">
+        <p>{{ user.username }}</p>
+        <p>Total points: {{ user.totalPoints }}</p>
+      </li>
+    </ul>
   </div>
+  <div class="main-menu">
+    <h2 class="game-modes-title">Game Modes</h2>
+    <button class="menu-button" routerLink="/game">Find the City</button>
+    <button class="menu-button" routerLink="/game">Find the Country</button>
+    <p class="playing-as">Playing as {{ username }}</p>
+    <button
+      *ngIf="username === 'Guest' || username === null"
+      class="login-button"
+      routerLink="/login"
+    >
+      Login
+    </button>
+    <button
+      *ngIf="username !== 'Guest' && username !== null"
+      class="logout-button"
+      (click)="logout()"
+    >
+      Logout
+    </button>
+  </div>
+  <div class="latest-games">
+    <h2>Latest Games</h2>
+    <ul>
+      <li *ngFor="let game of latestGamesList">
+        <p>Points: {{ game.points }}</p>
+        <p>Location: {{ game.location }}</p>
+      </li>
+    </ul>
+  </div>
+</div>

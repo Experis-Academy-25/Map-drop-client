@@ -4,18 +4,22 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class HomePageService {
-
-  constructor() { }
+  constructor() {}
 
   http = inject(HttpClient);
 
   getMatchHistory(): Observable<any> {
     const userid = localStorage.getItem('id');
 
-    return this.http.get<any>(`${environment.databaseUrl}/games/${userid}/history`);
+    return this.http.get<any>(
+      `${environment.databaseUrl}/games/${userid}/history`
+    );
   }
-  
+
+  getLeaderboard(): Observable<any> {
+    return this.http.get<any>(`${environment.databaseUrl}/users/leaderboard`);
+  }
 }
