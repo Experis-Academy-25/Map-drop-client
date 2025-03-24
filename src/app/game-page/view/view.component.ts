@@ -21,6 +21,8 @@ export class GameViewComponent {
     version: 'weekly',
   });
 
+  marker: any;
+
   hints: { text: string; link: string }[] = [
     { text: 'Hint 1', link: 'https://example.com/hint1' },
     { text: 'Hint 2', link: 'https://example.com/hint2' },
@@ -62,7 +64,6 @@ export class GameViewComponent {
             pitch: 0,
           }
         );
-        panorama.setAddressControlOptions(false);
         panorama.setVisible(true);
       })
       .catch((e) => {
@@ -82,15 +83,28 @@ export class GameViewComponent {
           zoom: 1.5,
           mapTypeControl: false,
           streetViewControl: false,
+          mapId: 'marker_map',
         });
 
-        map.setPosition(astorPlace);
-        map.setVisible(true);
+        this.loader
+          .importLibrary('marker')
+          .then(({ AdvancedMarkerElement }) => {
+            this.marker = new AdvancedMarkerElement({ map: map });
+          });
+        map.addListener('click', (e: any) => {
+          this.placeMarker(e.latLng);
+        });
       })
       .catch((e) => {
         console.log(e);
       });
   }
+
+  placeMarker(latLng: google.maps.LatLng) {
+    this.marker.position = latLng;
+  }
+
+  submitGuess() {}
 
   nextHint() {
     if (this.currentHintIndex < this.hints.length - 1) {
