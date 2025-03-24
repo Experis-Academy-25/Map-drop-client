@@ -7,16 +7,17 @@
 
 .exit-button {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 20px;
+  left: 20px;
   padding: 10px;
   border: none;
-  border-radius: 5px;
-  background-color: rgba(255, 0, 0, 0.5); /* Semi-transparent red background */
+  border-radius: 2px;
+  background-color: rgba(255, 0, 0, 1); /* Semi-transparent red background */
   color: white;
   cursor: pointer;
   font-size: 16px;
-  opacity: 0.8; /* Make the button somewhat transparent */
+  opacity: 0.6; /* Make the button somewhat transparent */
+  z-index: 1;
 }
 
 .exit-button:hover {
@@ -25,8 +26,6 @@
 
 .main-container {
   flex: 4;
-  background-color: lightgray;
-  padding: 10px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
@@ -36,13 +35,17 @@
 }
 
 .submit-button {
+  position: absolute;
+  margin: 10px;
   padding: 10px 20px;
   border: none;
   border-radius: 5px;
   background-color: #007bff; /* Blue background */
   color: white;
+  opacity: 0.8;
   cursor: pointer;
   font-size: 16px;
+  z-index: 1;
 }
 
 .submit-button:hover {
@@ -74,6 +77,12 @@
   aspect-ratio: 1 / 1; /* Make the container a square */
   width: 100%; /* Ensure the width is 100% of the parent container */
   border-radius: 10px; /* Add rounded corners */
+  flex: 4;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-start; /* Center the content horizontally */
 }
 
 .button-container {
@@ -105,6 +114,7 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 2;
 }
 
 .modal-content {
@@ -114,12 +124,20 @@ button:hover {
   text-align: center;
 }
 
+.modal-content button {
+  margin: 5px;
+}
+
 #streetview {
   height: 100%;
   width: 100%;
+  z-index: 0;
+  border-radius: 10px;
 }
 
 #map {
   height: 100%;
   width: 100%;
+  z-index: 0;
+  border-radius: 10px;
 }

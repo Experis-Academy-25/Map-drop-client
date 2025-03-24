@@ -104,6 +104,10 @@ export class GameViewComponent {
     this.marker.position = latLng;
   }
 
+  markerIsPlaced() {
+    return this.marker && this.marker.position != null;
+  }
+
   submitGuess() {}
 
   nextHint() {

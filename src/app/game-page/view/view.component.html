@@ -1,15 +1,10 @@
 <div class="container">
-  <!-- Exit Button -->
-  <button class="exit-button" (click)="showExitConfirmation()">Exit</button>
-
   <!-- Main Container -->
   <div class="main-container">
     <!-- Content for the main container -->
-    <!-- Conditional Submit Button -->
-    <button *ngIf="condition" class="submit-button" (click)="submitGuess()">
-      Submit
-    </button>
     <div id="streetview"></div>
+    <!-- Exit Button -->
+    <button class="exit-button" (click)="showExitConfirmation()">Exit</button>
   </div>
 
   <!-- Right Containers -->
@@ -31,6 +26,14 @@
     <div class="bottom-right-container">
       <!-- Content for the bottom right container -->
       <div id="map"></div>
+      <!-- Conditional Submit Button -->
+      <button
+        *ngIf="markerIsPlaced()"
+        class="submit-button"
+        (click)="submitGuess()"
+      >
+        Submit
+      </button>
     </div>
   </div>
 
