@@ -22,9 +22,11 @@ export class GameViewComponent {
     version: 'weekly',
   });
 
-  marker: any;
+  marker: any; // The guess marker
 
-  position = { lat: 40.4168, lng: -3.7038 };
+  position = { lat: 40.4168, lng: -3.7038 }; // Coordinates for the answer
+  location = 'Madrid'; // Answer location
+  distance = -1; // Temp. distance (if -1 is displayed, something went wrong)
 
   hints: { text: string; link: string }[] = [
     { text: 'Hint 1', link: 'https://example.com/hint1' },
@@ -104,33 +106,48 @@ export class GameViewComponent {
   initResultsMap(): void {
     let map: any;
 
-    this.loader
-      .importLibrary('maps')
-      .then(({ Map }) => {
-        map = new Map(document.getElementById('results-map') as HTMLElement, {
-          center: this.position,
-          zoom: 1.5,
-          mapTypeControl: false,
-          streetViewControl: false,
-          mapId: 'results_map',
-        });
-
-        this.loader
-          .importLibrary('marker')
-          .then(({ AdvancedMarkerElement }) => {
-            new AdvancedMarkerElement({
-              map: map,
-              position: this.marker.position,
-            });
-            new AdvancedMarkerElement({
-              map: map,
-              position: this.position,
-            });
-          });
-      })
-      .catch((e) => {
-        console.log(e);
+    this.loader.importLibrary('maps').then(({ Map }) => {
+      map = new Map(document.getElementById('results-map') as HTMLElement, {
+        center: this.position,
+        zoom: 1.5,
+        mapTypeControl: false,
+        streetViewControl: false,
+        mapId: 'results_map',
+        // renderingType: google.maps.RenderingType.UNINITIALIZED,
       });
+
+      this.loader
+        .importLibrary('marker')
+        .then(({ AdvancedMarkerElement, PinElement }) => {
+          new AdvancedMarkerElement({
+            map: map,
+            position: this.marker.position,
+          });
+          new AdvancedMarkerElement({
+            map: map,
+            position: this.position,
+            content: new PinElement({
+              background: 'green',
+              glyphColor: 'white',
+              borderColor: 'green',
+            }).element,
+          });
+        });
+      if (
+        this.position.lng > this.marker.position.lng ||
+        this.marker.position.lng > 180 - this.position.lng
+      ) {
+        map.fitBounds(
+          new google.maps.LatLngBounds(this.marker.position, this.position),
+          40
+        );
+      } else {
+        map.fitBounds(
+          new google.maps.LatLngBounds(this.position, this.marker.position),
+          40
+        );
+      }
+    });
   }
 
   placeMarker(latLng: google.maps.LatLng) {
@@ -141,8 +158,28 @@ export class GameViewComponent {
     return this.marker && this.marker.position != null;
   }
 
+  calculateDistance() {
+    if (this.markerIsPlaced()) {
+      const positionLatLng = new google.maps.LatLng(
+        this.position.lat,
+        this.position.lng
+      );
+      this.loader.importLibrary('geometry').then(({ spherical }) => {
+        this.distance =
+          Math.round(
+            (spherical.computeDistanceBetween(
+              this.marker.position,
+              positionLatLng
+            ) /
+              1000) *
+              100
+          ) / 100; // Display in km
+      });
+    }
+  }
+
   submitGuess() {
-    // this.showResultsModal = true;
+    this.calculateDistance();
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
