@@ -15,6 +15,7 @@ export class GameViewComponent {
   maxViewedHintIndex: number = 0; // Track the highest hint index viewed
   condition: boolean = true; // Example condition
   showModal: boolean = false; // Control the visibility of the modal
+  showResultsModal: boolean = false;
 
   loader = new Loader({
     apiKey: environment.api_key,
@@ -22,6 +23,8 @@ export class GameViewComponent {
   });
 
   marker: any;
+
+  position = { lat: 40.4168, lng: -3.7038 };
 
   hints: { text: string; link: string }[] = [
     { text: 'Hint 1', link: 'https://example.com/hint1' },
@@ -44,20 +47,19 @@ export class GameViewComponent {
   initStreetView(): void {
     let panorama: any;
 
-    const astorPlace = { lat: 40.729884, lng: -73.990988 };
     this.loader
       .importLibrary('streetView')
       .then(({ StreetViewPanorama }) => {
         panorama = new StreetViewPanorama(
           document.getElementById('streetview') as HTMLElement,
           {
-            position: astorPlace,
+            position: this.position,
             zoom: 18,
             addressControl: false,
           }
         );
 
-        panorama.setPosition(astorPlace);
+        panorama.setPosition(this.position);
         panorama.setPov(
           /** @type {google.maps.StreetViewPov} */ {
             heading: 265,
@@ -74,12 +76,11 @@ export class GameViewComponent {
   initMap(): void {
     let map: any;
 
-    const astorPlace = { lat: 40.729884, lng: -73.990988 };
     this.loader
       .importLibrary('maps')
       .then(({ Map }) => {
         map = new Map(document.getElementById('map') as HTMLElement, {
-          center: astorPlace,
+          center: this.position,
           zoom: 1.5,
           mapTypeControl: false,
           streetViewControl: false,
@@ -100,6 +101,38 @@ export class GameViewComponent {
       });
   }
 
+  initResultsMap(): void {
+    let map: any;
+
+    this.loader
+      .importLibrary('maps')
+      .then(({ Map }) => {
+        map = new Map(document.getElementById('results-map') as HTMLElement, {
+          center: this.position,
+          zoom: 1.5,
+          mapTypeControl: false,
+          streetViewControl: false,
+          mapId: 'results_map',
+        });
+
+        this.loader
+          .importLibrary('marker')
+          .then(({ AdvancedMarkerElement }) => {
+            new AdvancedMarkerElement({
+              map: map,
+              position: this.marker.position,
+            });
+            new AdvancedMarkerElement({
+              map: map,
+              position: this.position,
+            });
+          });
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
   placeMarker(latLng: google.maps.LatLng) {
     this.marker.position = latLng;
   }
@@ -108,7 +141,12 @@ export class GameViewComponent {
     return this.marker && this.marker.position != null;
   }
 
-  submitGuess() {}
+  submitGuess() {
+    // this.showResultsModal = true;
+    this.initResultsMap();
+    const modal = document.getElementById('results-modal') as HTMLElement;
+    modal.style.zIndex = '1';
+  }
 
   nextHint() {
     if (this.currentHintIndex < this.hints.length - 1) {

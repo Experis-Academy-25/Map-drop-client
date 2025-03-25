@@ -45,4 +45,16 @@
       <button (click)="cancelExit()">No</button>
     </div>
   </div>
+
+  <!-- Submission information Modal -->
+  <!-- <div *ngIf="showResultsModal" class="modal" [style.z-index]="-1"> -->
+  <div class="modal" id="results-modal" [style.z-index]="-1">
+    <div class="modal-content">
+      <div id="results-map"></div>
+      <p>Points</p>
+      <p>Location</p>
+      <p>Distance</p>
+      <button (click)="confirmExit()">Exit</button>
+    </div>
+  </div>
 </div>
