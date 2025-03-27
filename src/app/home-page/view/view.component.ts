@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { HomePageService } from '../../home-page.service';
 import { Router } from '@angular/router';
+import { SharedService } from '../../shared.service';
+import { json } from '@angular-devkit/core';
 
 @Component({
   selector: 'app-view',
@@ -13,10 +15,13 @@ export class HomeViewComponent {
   latestGamesList: any[] = []; // Array to store the latest games
   username = localStorage.getItem('username');
   leaderboard: any[] = [];
+  
 
   constructor(private router: Router) {}
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+   
+
     this.checkUsername();
     // Subscribe to the latestGames observable
     this.homePageService.getMatchHistory().subscribe({
@@ -57,4 +62,6 @@ export class HomeViewComponent {
     // Refresh the page
     window.location.reload();
   }
+
+  
 }
