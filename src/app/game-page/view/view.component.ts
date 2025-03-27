@@ -3,7 +3,11 @@ import { Router } from '@angular/router';
 import { Loader } from '@googlemaps/js-api-loader';
 import { environment } from '../../../environments/environment.development';
 import { SharedService } from '../../shared.service';
+
 import { countries } from '../../../countries';
+
+import { GamePageService } from '../../game-page.service';
+
 
 @Component({
   selector: 'app-view',
@@ -12,6 +16,7 @@ import { countries } from '../../../countries';
   styleUrls: ['./view.component.css'],
 })
 export class GameViewComponent {
+  gamePageService = inject(GamePageService);
   points: number = 10; // Example points value
   currentHintIndex: number = 0;
   maxViewedHintIndex: number = 0; // Track the highest hint index viewed
@@ -24,12 +29,15 @@ export class GameViewComponent {
     version: 'weekly',
   });
 
-  marker: any;
+  marker: any; // The guess marker
   panorama: any;
   sv: any;
   position: any;
+
   radius: number = 2000000;
   country: string = countries[Math.floor(Math.random() * countries.length)];
+
+  distance = -1; // Temp. distance (if -1 is displayed, something went wrong)
 
   hints: { text: string }[] = [];
 
@@ -54,7 +62,10 @@ export class GameViewComponent {
     }
     console.log(this.country);
 
-    this.position = { lat: parseFloat(jsonObject.Latitude), lng: parseFloat(jsonObject.Longitude) };
+    this.position = {
+      lat: parseFloat(jsonObject.Latitude),
+      lng: parseFloat(jsonObject.Longitude),
+    };
     console.log('Position:', this.position);
     this.hints = [
       { text: jsonObject.Hint1 },
@@ -77,13 +88,12 @@ export class GameViewComponent {
     return await this.loader.importLibrary('streetView').then(() => {
       if (!this.panorama) {
         this.panorama = new google.maps.StreetViewPanorama(
-          document.getElementById('streetview') as HTMLElement, {
+          document.getElementById('streetview') as HTMLElement,
+          {
             addressControl: false,
             fullscreenControl: false,
             showRoadLabels: false,
             imageDateControl: false,
-            
-
           }
         );
         this.sv = new google.maps.StreetViewService();
@@ -114,23 +124,27 @@ export class GameViewComponent {
 
   //nytt
 
-  constructor(private router: Router) {
-    
-  }
+  constructor(private router: Router) {}
 
   async initStreetView(): Promise<void> {
     await this.initializePanorama(); // Ensure the panorama is initialized
-  
-    this.sv.getPanorama({ location: this.position, radius: this.radius, preference: "nearest" }).then(this.processSVData.bind(this));
+
+    this.sv
+      .getPanorama({
+        location: this.position,
+        radius: this.radius,
+        preference: 'nearest',
+      })
+      .then(this.processSVData.bind(this));
   }
 
   async processSVData({ data }: google.maps.StreetViewResponse) {
     await this.initializePanorama(); // Ensure the panorama is initialized
-  
+
     const location = data.location!;
     console.log('Data:', data);
     console.log('Panorama:', this.panorama);
-  
+
     this.panorama.setPano(location.pano as string); // Set the panorama ID
     this.panorama.setPov({
       heading: 270,
@@ -169,33 +183,47 @@ export class GameViewComponent {
 
   initResultsMap(): void {
     let map: any;
-    this.loader
-      .importLibrary('maps')
-      .then(({ Map }) => {
-        map = new Map(document.getElementById('results-map') as HTMLElement, {
-          center: this.position,
-          zoom: 1.5,
-          mapTypeControl: false,
-          streetViewControl: false,
-          mapId: 'results_map',
-        });
-
-        this.loader
-          .importLibrary('marker')
-          .then(({ AdvancedMarkerElement }) => {
-            new AdvancedMarkerElement({
-              map: map,
-              position: this.marker.position,
-            });
-            new AdvancedMarkerElement({
-              map: map,
-              position: this.position,
-            });
-          });
-      })
-      .catch((e) => {
-        console.log(e);
+    this.loader.importLibrary('maps').then(({ Map }) => {
+      map = new Map(document.getElementById('results-map') as HTMLElement, {
+        center: this.position,
+        zoom: 1.5,
+        mapTypeControl: false,
+        streetViewControl: false,
+        mapId: 'results_map',
       });
+
+      this.loader
+        .importLibrary('marker')
+        .then(({ AdvancedMarkerElement, PinElement }) => {
+          new AdvancedMarkerElement({
+            map: map,
+            position: this.marker.position,
+          });
+          new AdvancedMarkerElement({
+            map: map,
+            position: this.position,
+            content: new PinElement({
+              background: 'green',
+              glyphColor: 'white',
+              borderColor: 'green',
+            }).element,
+          });
+        });
+      if (
+        this.position.lng > this.marker.position.lng ||
+        this.marker.position.lng > 180 - this.position.lng
+      ) {
+        map.fitBounds(
+          new google.maps.LatLngBounds(this.marker.position, this.position),
+          40
+        );
+      } else {
+        map.fitBounds(
+          new google.maps.LatLngBounds(this.position, this.marker.position),
+          40
+        );
+      }
+    });
   }
 
   placeMarker(latLng: google.maps.LatLng) {
@@ -206,11 +234,48 @@ export class GameViewComponent {
     return this.marker && this.marker.position != null;
   }
 
+  calculateDistance() {
+    if (this.markerIsPlaced()) {
+      const positionLatLng = new google.maps.LatLng(
+        this.position.lat,
+        this.position.lng
+      );
+      this.loader.importLibrary('geometry').then(({ spherical }) => {
+        this.distance =
+          Math.round(
+            (spherical.computeDistanceBetween(
+              this.marker.position,
+              positionLatLng
+            ) /
+              1000) *
+              100
+          ) / 100; // Display in km
+      });
+    }
+  }
+
   submitGuess() {
-    // this.showResultsModal = true;
+    this.showResultsModal = true;
+    this.calculateDistance();
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
+    this.gamePageService
+      .createGame({
+        points: this.points,
+        distance: this.distance,
+        location: this.location,
+        longitude_guess: this.marker.position.lng,
+        latitude_guess: this.marker.position.lat,
+        longitude_real: this.position.lng,
+        latitude_real: this.position.lat,
+      })
+      .subscribe({
+        next: (response: any) => {
+          console.log(response);
+        },
+        error: (error) => console.log(error),
+      });
   }
 
   nextHint() {
