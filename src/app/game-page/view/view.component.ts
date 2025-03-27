@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { Loader } from '@googlemaps/js-api-loader';
 import { environment } from '../../../environments/environment.development';
+import { SharedService } from '../../shared.service';
 
 @Component({
   selector: 'app-view',
@@ -23,56 +24,124 @@ export class GameViewComponent {
   });
 
   marker: any; // The guess marker
-
-  position = { lat: 40.4168, lng: -3.7038 }; // Coordinates for the answer
+  panorama: any;
+  sv: any;
+  position: any;
+  radius: number = 2000000; // Coordinates for the answer
   location = 'Madrid'; // Answer location
   distance = -1; // Temp. distance (if -1 is displayed, something went wrong)
 
-  hints: { text: string; link: string }[] = [
-    { text: 'Hint 1', link: 'https://example.com/hint1' },
-    { text: 'Hint 2', link: 'https://example.com/hint2' },
-    { text: 'Hint 3', link: 'https://example.com/hint3' },
-    { text: 'Hint 4', link: 'https://example.com/hint4' },
-    { text: 'Hint 5', link: 'https://example.com/hint5' },
-    { text: 'Hint 6', link: 'https://example.com/hint6' },
-    { text: 'Hint 7', link: 'https://example.com/hint7' },
-    { text: 'Hint 8', link: 'https://example.com/hint8' },
-    { text: 'Hint 9', link: 'https://example.com/hint9' },
-    { text: 'Hint 10', link: 'https://example.com/hint10' },
-  ];
+  hints: { text: string }[] = [];
 
-  constructor(private router: Router) {
+  //nytt
+  sharedService = inject(SharedService);
+  prompt: string =
+    'Only give me decimal degree coordinates anywhere in the world that has google street view and is on a street and also somewhere you have not already given me. Feel free to also give coordinates for smaller, more unknown countries. Give me 10 hints about the area the coordinates are located, the hints can not include the name of the country or city. The hints shall decrease in difficulty, the first hint should be the hardest. The output should have this structure: { Latitude: , Longitude: , Hint1: , Hint2: , Hint3: , Hint4: , Hint5: , Hint6: , Hint7: , Hint8: , Hint9: , Hint10: }, both the key and value should be in double quotation marks. Only give me 1 set of coordinates and hints at a time.';
+  output: string = '';
+
+  async ngOnInit(): Promise<void> {
+    const result = await this.sharedService
+      .initializeModel('gemini-2.0-flash')
+      .generateContent(this.prompt);
+
+    const response = await result.response;
+    this.output = response.text();
+    console.log(this.output);
+
+    const jsonObject = this.getJSONfromOutput();
+    if (jsonObject) {
+      console.log('Parsed JSON Object:', jsonObject);
+    }
+
+    this.position = {
+      lat: parseFloat(jsonObject.Latitude),
+      lng: parseFloat(jsonObject.Longitude),
+    };
+    console.log('Position:', this.position);
+    this.hints = [
+      { text: jsonObject.Hint1 },
+      { text: jsonObject.Hint2 },
+      { text: jsonObject.Hint3 },
+      { text: jsonObject.Hint4 },
+      { text: jsonObject.Hint5 },
+      { text: jsonObject.Hint6 },
+      { text: jsonObject.Hint7 },
+      { text: jsonObject.Hint8 },
+      { text: jsonObject.Hint9 },
+      { text: jsonObject.Hint10 },
+    ];
+
     this.initStreetView();
     this.initMap();
   }
 
-  initStreetView(): void {
-    let panorama: any;
-
-    this.loader
-      .importLibrary('streetView')
-      .then(({ StreetViewPanorama }) => {
-        panorama = new StreetViewPanorama(
+  async initializePanorama(): Promise<void> {
+    return await this.loader.importLibrary('streetView').then(() => {
+      if (!this.panorama) {
+        this.panorama = new google.maps.StreetViewPanorama(
           document.getElementById('streetview') as HTMLElement,
           {
-            position: this.position,
-            zoom: 18,
             addressControl: false,
+            fullscreenControl: false,
+            showRoadLabels: false,
+            imageDateControl: false,
           }
         );
+        this.sv = new google.maps.StreetViewService();
+      }
+    });
+  }
 
-        panorama.setPosition(this.position);
-        panorama.setPov(
-          /** @type {google.maps.StreetViewPov} */ {
-            heading: 265,
-            pitch: 0,
-          }
-        );
-        panorama.setVisible(true);
+  getJSONfromOutput() {
+    try {
+      // Use a regular expression to extract the JSON part of the string
+      const jsonMatch = this.output.match(/\{[\s\S]*\}/); // Matches everything between the first and last curly brackets
+      console.log('JSON Match:', jsonMatch);
+
+      if (jsonMatch) {
+        // Parse the extracted JSON string into a JavaScript object
+        const jsonObject = JSON.parse(jsonMatch[0]);
+        console.log('Extracted JSON:', jsonObject);
+        return jsonObject; // Return the JSON object
+      } else {
+        console.error('No JSON object found in the output string.');
+        return null;
+      }
+    } catch (error) {
+      console.error('Error parsing JSON from output:', error);
+      return null;
+    }
+  }
+
+  //nytt
+
+  constructor(private router: Router) {}
+
+  async initStreetView(): Promise<void> {
+    await this.initializePanorama(); // Ensure the panorama is initialized
+
+    this.sv
+      .getPanorama({
+        location: this.position,
+        radius: this.radius,
+        preference: 'nearest',
       })
-      .catch((e) => {
-        console.log(e);
-      });
+      .then(this.processSVData.bind(this));
+  }
+
+  async processSVData({ data }: google.maps.StreetViewResponse) {
+    await this.initializePanorama(); // Ensure the panorama is initialized
+
+    const location = data.location!;
+    console.log('Data:', data);
+    console.log('Panorama:', this.panorama);
+
+    this.panorama.setPano(location.pano as string); // Set the panorama ID
+    this.panorama.setPov({
+      heading: 270,
+      pitch: 0,
+    });
+    this.panorama.setVisible(true);
   }
 
   initMap(): void {
@@ -105,7 +174,6 @@ export class GameViewComponent {
 
   initResultsMap(): void {
     let map: any;
-
     this.loader.importLibrary('maps').then(({ Map }) => {
       map = new Map(document.getElementById('results-map') as HTMLElement, {
         center: this.position,
@@ -113,7 +181,6 @@ export class GameViewComponent {
         mapTypeControl: false,
         streetViewControl: false,
         mapId: 'results_map',
-        // renderingType: google.maps.RenderingType.UNINITIALIZED,
       });
 
       this.loader
