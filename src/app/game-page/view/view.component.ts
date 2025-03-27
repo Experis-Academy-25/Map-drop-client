@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Loader } from '@googlemaps/js-api-loader';
 import { environment } from '../../../environments/environment.development';
 import { SharedService } from '../../shared.service';
+import { GamePageService } from '../../game-page.service';
 
 @Component({
   selector: 'app-view',
@@ -11,6 +12,7 @@ import { SharedService } from '../../shared.service';
   styleUrls: ['./view.component.css'],
 })
 export class GameViewComponent {
+  gamePageService = inject(GamePageService);
   points: number = 10; // Example points value
   currentHintIndex: number = 0;
   maxViewedHintIndex: number = 0; // Track the highest hint index viewed
@@ -246,10 +248,30 @@ export class GameViewComponent {
   }
 
   submitGuess() {
+    this.showResultsModal = true;
+  }
+
+  initResultsModal() {
     this.calculateDistance();
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
+    this.gamePageService
+      .createGame({
+        points: this.points,
+        distance: this.distance,
+        location: this.location,
+        longitude_guess: this.marker.position.lng,
+        latitude_guess: this.marker.position.lat,
+        longitude_real: this.position.lng,
+        latitude_real: this.position.lat,
+      })
+      .subscribe({
+        next: (response: any) => {
+          console.log(response);
+        },
+        error: (error) => console.log(error),
+      });
   }
 
   nextHint() {
