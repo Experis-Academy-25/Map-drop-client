@@ -3,7 +3,11 @@ import { Router } from '@angular/router';
 import { Loader } from '@googlemaps/js-api-loader';
 import { environment } from '../../../environments/environment.development';
 import { SharedService } from '../../shared.service';
+
+import { countries } from '../../../countries';
+
 import { GamePageService } from '../../game-page.service';
+
 
 @Component({
   selector: 'app-view',
@@ -29,8 +33,10 @@ export class GameViewComponent {
   panorama: any;
   sv: any;
   position: any;
-  radius: number = 2000000; // Coordinates for the answer
-  location = 'Madrid'; // Answer location
+
+  radius: number = 2000000;
+  country: string = countries[Math.floor(Math.random() * countries.length)];
+
   distance = -1; // Temp. distance (if -1 is displayed, something went wrong)
 
   hints: { text: string }[] = [];
@@ -38,7 +44,7 @@ export class GameViewComponent {
   //nytt
   sharedService = inject(SharedService);
   prompt: string =
-    'Only give me decimal degree coordinates anywhere in the world that has google street view and is on a street and also somewhere you have not already given me. Feel free to also give coordinates for smaller, more unknown countries. Give me 10 hints about the area the coordinates are located, the hints can not include the name of the country or city. The hints shall decrease in difficulty, the first hint should be the hardest. The output should have this structure: { Latitude: , Longitude: , Hint1: , Hint2: , Hint3: , Hint4: , Hint5: , Hint6: , Hint7: , Hint8: , Hint9: , Hint10: }, both the key and value should be in double quotation marks. Only give me 1 set of coordinates and hints at a time.';
+    "Give me decimal degree coordinates and 10 hints about that area, following these constraints: - Must be inside " + this.country + ". - Must have google street view available. - Must not be located in the same country as earlier ones. - The hints must not mention " + this.country + " or the city it's in. - The decimal degree coorinated must be on land. - The hints should be ordered by difficulty from hardest to easiest 1-10. - The structure must be in this structure: { Latitude: , Longitude: , Country: , Hint1: , Hint2: , Hint3: , Hint4: , Hint5: , Hint6: , Hint7: , Hint8: , Hint9: , Hint10: }, both the key and value should be in double quotation marks. Only give me 1 set of coordinates and hints at a time.";
   output: string = '';
 
   async ngOnInit(): Promise<void> {
@@ -54,6 +60,7 @@ export class GameViewComponent {
     if (jsonObject) {
       console.log('Parsed JSON Object:', jsonObject);
     }
+    console.log(this.country);
 
     this.position = {
       lat: parseFloat(jsonObject.Latitude),
