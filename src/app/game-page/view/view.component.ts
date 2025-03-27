@@ -249,9 +249,6 @@ export class GameViewComponent {
 
   submitGuess() {
     this.showResultsModal = true;
-  }
-
-  initResultsModal() {
     this.calculateDistance();
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
