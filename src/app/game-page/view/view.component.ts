@@ -24,9 +24,10 @@ export class GameViewComponent {
   });
 
   marker: any;
-
+  panorama: any;
+  sv: any;
   position: any;
-  radius: number = 1000;
+  radius: number = 2000000;
 
   hints: { text: string }[] = [];
 
@@ -69,6 +70,24 @@ export class GameViewComponent {
     this.initMap();
   }
 
+  async initializePanorama(): Promise<void> {
+    return await this.loader.importLibrary('streetView').then(() => {
+      if (!this.panorama) {
+        this.panorama = new google.maps.StreetViewPanorama(
+          document.getElementById('streetview') as HTMLElement, {
+            addressControl: false,
+            fullscreenControl: false,
+            showRoadLabels: false,
+            imageDateControl: false,
+            
+
+          }
+        );
+        this.sv = new google.maps.StreetViewService();
+      }
+    });
+  }
+
   getJSONfromOutput() {
     try {
       // Use a regular expression to extract the JSON part of the string
@@ -93,37 +112,28 @@ export class GameViewComponent {
   //nytt
 
   constructor(private router: Router) {
-   
+    
   }
 
-  initStreetView(): void {
-    let panorama: any;
-    console.log('inside initmap' + this.position.lat + ' ' + this.position.lng);
-    this.loader
-      .importLibrary('streetView')
-      .then(({ StreetViewPanorama }) => {
-        panorama = new StreetViewPanorama(
-          document.getElementById('streetview') as HTMLElement,
-          {
-            position: this.position,
-            zoom: 18,
-            addressControl: false,
-          }
-        );
-        
-        
-        panorama.setPosition(this.position, this.radius);
-        panorama.setPov(
-          /** @type {google.maps.StreetViewPov} */ {
-            heading: 265,
-            pitch: 0,
-          }
-        );
-        panorama.setVisible(true);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+  async initStreetView(): Promise<void> {
+    await this.initializePanorama(); // Ensure the panorama is initialized
+  
+    this.sv.getPanorama({ location: this.position, radius: this.radius, preference: "nearest" }).then(this.processSVData.bind(this));
+  }
+
+  async processSVData({ data }: google.maps.StreetViewResponse) {
+    await this.initializePanorama(); // Ensure the panorama is initialized
+  
+    const location = data.location!;
+    console.log('Data:', data);
+    console.log('Panorama:', this.panorama);
+  
+    this.panorama.setPano(location.pano as string); // Set the panorama ID
+    this.panorama.setPov({
+      heading: 270,
+      pitch: 0,
+    });
+    this.panorama.setVisible(true);
   }
 
   initMap(): void {
