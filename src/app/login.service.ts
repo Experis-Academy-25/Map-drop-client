@@ -5,11 +5,10 @@ import { Observable } from 'rxjs';
 import { environment } from '../environments/environment.development';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class LoginService {
-
-  constructor() { }
+  constructor() {}
 
   http = inject(HttpClient);
 
@@ -18,6 +17,9 @@ export class LoginService {
     const username = login.username;
     console.log('username' + username, 'password' + password);
     // Return the HTTP POST request as an Observable
-    return this.http.post(`${environment.databaseUrl}/auth/login`, { username, password });
+    return this.http.post(`${environment.databaseUrl}/auth/login`, {
+      username,
+      password,
+    });
   }
 }

@@ -1,3 +1,4 @@
+
 <div class="container">
   <!-- Main Container -->
   <div class="main-container">
@@ -13,9 +14,7 @@
     <div class="top-right-container">
       <h2>Points: {{ points }}</h2>
       <p>{{ hints[currentHintIndex].text }}</p>
-      <a [href]="hints[currentHintIndex].link">{{
-        hints[currentHintIndex].link
-      }}</a>
+      
       <div class="button-container">
         <button (click)="previousHint()">Button 1</button>
         <button (click)="nextHint()">Button 2</button>
@@ -43,6 +42,18 @@
       <p>Are you sure?</p>
       <button (click)="confirmExit()">Yes</button>
       <button (click)="cancelExit()">No</button>
+    </div>
+  </div>
+
+  <!-- Submission information Modal -->
+  <!-- <div *ngIf="showResultsModal"> -->
+  <div class="modal" id="results-modal" [style.z-index]="-1">
+    <div class="modal-content">
+      <div id="results-map"></div>
+      <p>Points: {{ this.points }}</p>
+      <p>Location: {{ this.location }}</p>
+      <p>Distance: {{ this.distance }} km</p>
+      <button (click)="confirmExit()">Exit</button>
     </div>
   </div>
 </div>
