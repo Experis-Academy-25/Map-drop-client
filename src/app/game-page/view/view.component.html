@@ -12,7 +12,7 @@
   <div class="right-container">
     <!-- Top Right Container -->
     <div class="top-right-container">
-      <h2>Points: {{ points }}</h2>
+      <h2>Points: {{ this.hintPoints }}</h2>
       <p>{{ hints[currentHintIndex].text }}</p>
       
       <div class="button-container">
@@ -50,8 +50,8 @@
   <div class="modal" id="results-modal" [style.z-index]="-1">
     <div class="modal-content">
       <div id="results-map"></div>
-      <p>Points: {{ this.points }}</p>
-      <p>Location: {{ this.location }}</p>
+      <p>Score: {{ this.score }}</p>
+      <p>Location: {{ this.country }}</p>
       <p>Distance: {{ this.distance }} km</p>
       <button (click)="confirmExit()">Exit</button>
     </div>
