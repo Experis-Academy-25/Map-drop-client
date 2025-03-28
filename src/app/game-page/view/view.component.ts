@@ -33,7 +33,6 @@ export class GameViewComponent {
   panorama: any;
   sv: any;
   position: any;
-  
 
   radius: number = 2000000;
   country: string = countries[Math.floor(Math.random() * countries.length)];
@@ -61,7 +60,6 @@ export class GameViewComponent {
     this.output = response.text();
 
     const jsonObject = this.getJSONfromOutput();
-
 
     this.position = {
       lat: parseFloat(jsonObject.Latitude),
@@ -110,7 +108,6 @@ export class GameViewComponent {
       // Use a regular expression to extract the JSON part of the string
       const jsonMatch = this.output.match(/\{[\s\S]*\}/); // Matches everything between the first and last curly brackets
 
-
       if (jsonMatch) {
         // Parse the extracted JSON string into a JavaScript object
         const jsonObject = JSON.parse(jsonMatch[0]);
@@ -128,9 +125,7 @@ export class GameViewComponent {
 
   //nytt
 
-  constructor(private router: Router) {
-    
-  }
+  constructor(private router: Router) {}
 
   async initStreetView(): Promise<void> {
     await this.initializePanorama(); // Ensure the panorama is initialized
@@ -148,7 +143,6 @@ export class GameViewComponent {
     await this.initializePanorama(); // Ensure the panorama is initialized
 
     const location = data.location!;
-
 
     this.panorama.setPano(location.pano as string); // Set the panorama ID
     this.panorama.setPov({
@@ -263,23 +257,31 @@ export class GameViewComponent {
         this.position.lat,
         this.position.lng
       );
-      this.loader.importLibrary('geometry').then(({ spherical }) => {
-        this.distance =
-          Math.round(
-            (spherical.computeDistanceBetween(
-              this.marker.position,
-              positionLatLng
-            ) /1000) *100) / 100; // Display in km
-        this.calculatePoints();
-      });
 
+      this.distance =
+        Math.round(
+          (google.maps.geometry.spherical.computeDistanceBetween(
+            this.marker.position,
+            positionLatLng
+          ) /
+            1000) *
+            100
+        ) / 100; // Display in km
+      this.calculatePoints();
     }
   }
 
   calculatePoints() {
-    this.score = Math.round((this.hintPoints/5) * 100 * Math.exp((-10 * this.distance) / 20000) * 1) / 1 - 50;
+    this.score =
+      Math.round(
+        (this.hintPoints / 5) *
+          100 *
+          Math.exp((-10 * this.distance) / 20000) *
+          1
+      ) /
+        1 -
+      50;
   }
-
 
   submitGuess() {
     this.showResultsModal = true;
@@ -287,6 +289,7 @@ export class GameViewComponent {
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
+    console.log(this.score);
     this.gamePageService
       .createGame({
         points: this.score,
@@ -303,7 +306,6 @@ export class GameViewComponent {
         },
         error: (error) => console.log(error),
       });
-
   }
 
   nextHint() {
