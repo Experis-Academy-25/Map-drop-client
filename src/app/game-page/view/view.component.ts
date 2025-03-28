@@ -17,8 +17,9 @@ import { GamePageService } from '../../game-page.service';
 })
 export class GameViewComponent {
   gamePageService = inject(GamePageService);
-  points: number = 10; // Example points value
+  hintPoints: number = 10; // Example hintPoints value
   currentHintIndex: number = 0;
+  score: number = 0; // Example score value
   maxViewedHintIndex: number = 0; // Track the highest hint index viewed
   condition: boolean = true; // Example condition
   showModal: boolean = false; // Control the visibility of the modal
@@ -33,6 +34,7 @@ export class GameViewComponent {
   panorama: any;
   sv: any;
   position: any;
+  
 
   radius: number = 2000000;
   country: string = countries[Math.floor(Math.random() * countries.length)];
@@ -54,19 +56,15 @@ export class GameViewComponent {
 
     const response = await result.response;
     this.output = response.text();
-    console.log(this.output);
 
     const jsonObject = this.getJSONfromOutput();
-    if (jsonObject) {
-      console.log('Parsed JSON Object:', jsonObject);
-    }
-    console.log(this.country);
+
 
     this.position = {
       lat: parseFloat(jsonObject.Latitude),
       lng: parseFloat(jsonObject.Longitude),
     };
-    console.log('Position:', this.position);
+
     this.hints = [
       { text: jsonObject.Hint1 },
       { text: jsonObject.Hint2 },
@@ -105,12 +103,12 @@ export class GameViewComponent {
     try {
       // Use a regular expression to extract the JSON part of the string
       const jsonMatch = this.output.match(/\{[\s\S]*\}/); // Matches everything between the first and last curly brackets
-      console.log('JSON Match:', jsonMatch);
+
 
       if (jsonMatch) {
         // Parse the extracted JSON string into a JavaScript object
         const jsonObject = JSON.parse(jsonMatch[0]);
-        console.log('Extracted JSON:', jsonObject);
+
         return jsonObject; // Return the JSON object
       } else {
         console.error('No JSON object found in the output string.');
@@ -124,7 +122,9 @@ export class GameViewComponent {
 
   //nytt
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) {
+    
+  }
 
   async initStreetView(): Promise<void> {
     await this.initializePanorama(); // Ensure the panorama is initialized
@@ -142,8 +142,7 @@ export class GameViewComponent {
     await this.initializePanorama(); // Ensure the panorama is initialized
 
     const location = data.location!;
-    console.log('Data:', data);
-    console.log('Panorama:', this.panorama);
+
 
     this.panorama.setPano(location.pano as string); // Set the panorama ID
     this.panorama.setPov({
@@ -234,7 +233,7 @@ export class GameViewComponent {
     return this.marker && this.marker.position != null;
   }
 
-  calculateDistance() {
+  calculatePointsAndDistance() {
     if (this.markerIsPlaced()) {
       const positionLatLng = new google.maps.LatLng(
         this.position.lat,
@@ -246,25 +245,29 @@ export class GameViewComponent {
             (spherical.computeDistanceBetween(
               this.marker.position,
               positionLatLng
-            ) /
-              1000) *
-              100
-          ) / 100; // Display in km
+            ) /1000) *100) / 100; // Display in km
+        this.calculatePoints();
       });
+
     }
   }
 
+  calculatePoints() {
+    this.score = Math.round((this.hintPoints/5) * 100 * Math.exp((-10 * this.distance) / 20000) * 1) / 1 - 50;
+  }
+
+
   submitGuess() {
     this.showResultsModal = true;
-    this.calculateDistance();
+    this.calculatePointsAndDistance();
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
     this.gamePageService
       .createGame({
-        points: this.points,
+        points: this.score,
         distance: this.distance,
-        location: this.location,
+        location: this.country,
         longitude_guess: this.marker.position.lng,
         latitude_guess: this.marker.position.lat,
         longitude_real: this.position.lng,
@@ -276,6 +279,7 @@ export class GameViewComponent {
         },
         error: (error) => console.log(error),
       });
+
   }
 
   nextHint() {
@@ -283,7 +287,7 @@ export class GameViewComponent {
       this.currentHintIndex++;
       if (this.currentHintIndex > this.maxViewedHintIndex) {
         this.maxViewedHintIndex = this.currentHintIndex;
-        this.points--; // Deduct points for viewing a new hint
+        this.hintPoints--; // Deduct hintPoints for viewing a new hint
       }
     }
   }
