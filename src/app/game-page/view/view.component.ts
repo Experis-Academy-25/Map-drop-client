@@ -8,7 +8,6 @@ import { countries } from '../../../countries';
 
 import { GamePageService } from '../../game-page.service';
 
-
 @Component({
   selector: 'app-view',
   standalone: false,
@@ -46,7 +45,11 @@ export class GameViewComponent {
   //nytt
   sharedService = inject(SharedService);
   prompt: string =
-    "Give me decimal degree coordinates and 10 hints about that area, following these constraints: - Must be inside " + this.country + ". - Must have google street view available. - Must not be located in the same country as earlier ones. - The hints must not mention " + this.country + " or the city it's in. - The decimal degree coorinated must be on land. - The hints should be ordered by difficulty from hardest to easiest 1-10. - The structure must be in this structure: { Latitude: , Longitude: , Country: , Hint1: , Hint2: , Hint3: , Hint4: , Hint5: , Hint6: , Hint7: , Hint8: , Hint9: , Hint10: }, both the key and value should be in double quotation marks. Only give me 1 set of coordinates and hints at a time.";
+    'Give me decimal degree coordinates and 10 hints about that area, following these constraints: - Must be inside ' +
+    this.country +
+    '. - Must have google street view available. - Must not be located in the same country as earlier ones. - The hints must not mention ' +
+    this.country +
+    " or the city it's in. - The decimal degree coorinated must be on land. - The hints should be ordered by difficulty from hardest to easiest 1-10. - The structure must be in this structure: { Latitude: , Longitude: , Country: , Hint1: , Hint2: , Hint3: , Hint4: , Hint5: , Hint6: , Hint7: , Hint8: , Hint9: , Hint10: }, both the key and value should be in double quotation marks. Only give me 1 set of coordinates and hints at a time.";
   output: string = '';
 
   async ngOnInit(): Promise<void> {
@@ -92,6 +95,9 @@ export class GameViewComponent {
             fullscreenControl: false,
             showRoadLabels: false,
             imageDateControl: false,
+            panControl: false,
+            linksControl: false,
+            clickToGo: false,
           }
         );
         this.sv = new google.maps.StreetViewService();
@@ -159,11 +165,20 @@ export class GameViewComponent {
       .importLibrary('maps')
       .then(({ Map }) => {
         map = new Map(document.getElementById('map') as HTMLElement, {
-          center: this.position,
-          zoom: 1.5,
+          center: { lat: 0, lng: 0 },
+          zoom: 1.8,
           mapTypeControl: false,
           streetViewControl: false,
           mapId: 'marker_map',
+          restriction: {
+            latLngBounds: new google.maps.LatLngBounds({
+              north: 85,
+              south: -85,
+              west: -179.9,
+              east: 179.9,
+            }),
+            strictBounds: true,
+          },
         });
 
         this.loader
@@ -189,6 +204,15 @@ export class GameViewComponent {
         mapTypeControl: false,
         streetViewControl: false,
         mapId: 'results_map',
+        restriction: {
+          latLngBounds: new google.maps.LatLngBounds({
+            north: 85,
+            south: -85,
+            west: -179.9,
+            east: 179.9,
+          }),
+          strictBounds: true,
+        },
       });
 
       this.loader

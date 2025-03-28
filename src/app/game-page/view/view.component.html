@@ -1,4 +1,3 @@
-
 <div class="container">
   <!-- Main Container -->
   <div class="main-container">
@@ -13,11 +12,11 @@
     <!-- Top Right Container -->
     <div class="top-right-container">
       <h2>Points: {{ this.hintPoints }}</h2>
-      <p>{{ hints[currentHintIndex].text }}</p>
-      
+      <p class="hint">{{ hints[currentHintIndex].text }}</p>
+
       <div class="button-container">
-        <button (click)="previousHint()">Button 1</button>
-        <button (click)="nextHint()">Button 2</button>
+        <button (click)="previousHint()">Previous</button>
+        <button (click)="nextHint()">Next</button>
       </div>
     </div>
 
@@ -45,9 +44,11 @@
     </div>
   </div>
 
+  <div class="layer"></div>
+
   <!-- Submission information Modal -->
   <!-- <div *ngIf="showResultsModal"> -->
-  <div class="modal" id="results-modal" [style.z-index]="-1">
+  <div id="results-modal" [style.z-index]="-1">
     <div class="modal-content">
       <div id="results-map"></div>
       <p>Score: {{ this.score }}</p>
