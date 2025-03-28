@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { SharedService } from '../../shared.service';
 import { json } from '@angular-devkit/core';
 
+
+
 @Component({
   selector: 'app-view',
   standalone: false,
