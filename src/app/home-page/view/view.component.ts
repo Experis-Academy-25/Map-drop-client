@@ -44,13 +44,7 @@ export class HomeViewComponent {
       },
     });
   }
-  /*[
-    { points: 100, location: 'New York, USA', timeSpent: '5 mins' },
-    { points: 90, location: 'London, UK', timeSpent: '4 mins' },
-    { points: 80, location: 'Paris, France', timeSpent: '6 mins' },
-    { points: 70, location: 'Berlin, Germany', timeSpent: '7 mins' },
-    { points: 60, location: 'Tokyo, Japan', timeSpent: '8 mins' }
-  ]; */
+
 
   checkUsername() {
     if (!this.username) {
