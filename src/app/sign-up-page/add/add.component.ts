@@ -157,17 +157,13 @@ export class AddComponent {
   }
 
   async onSubmit() {
-    console.log("1");
     if (this.signupForm.valid) {
-      console.log("2");
         this.createNewUser();
     }
   }
 
   createNewUser() {
-    console.log("3");
     this.signupService.createUser(this.signupForm.value);
-    console.log("4");
-    this.router.navigate(['/home']);
+    this.router.navigate(['/login']);
   }
 }

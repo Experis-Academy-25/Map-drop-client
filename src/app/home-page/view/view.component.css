@@ -1,78 +1,111 @@
-.home-container {
-    display: flex;
-    justify-content: space-between;
-    padding: 2rem;
-    background-color: #5C7285; /* Tan background */
-    height: 100vh;
-    position: relative;
+@font-face {
+  font-family: 'RetroGaming';
+  src: url('/assets/fonts/retro-gaming.ttf') format('truetype');
   }
+
+.home-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Prevent children from stretching vertically */
+  padding: 2rem;
+  background-color: #5C7285; 
+  height: 100vh;
+  position: relative;
+}
   
   .leaderboard, .latest-games {
     width: 20%;
-    background: #818C78; /* Wheat background */
+    background: #818C78;
     padding: 1rem;
-    border-radius: 8px;
+    border-radius: 15px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    max-height: calc(100vh - 4rem); /* Adjust for padding */
-    overflow-y: auto;
+    height: auto;
+    overflow-y: visible;
     z-index: 1;
   }
   
-  /* Custom scrollbar styling for WebKit browsers */
+
 .leaderboard::-webkit-scrollbar, .latest-games::-webkit-scrollbar {
     width: 12px;
   }
   
   .leaderboard::-webkit-scrollbar-track, .latest-games::-webkit-scrollbar-track {
-    background: #818C78; /* Light background for scrollbar track */
+    background: #818C78; 
     border-radius: 8px;
   }
   
   .leaderboard::-webkit-scrollbar-thumb, .latest-games::-webkit-scrollbar-thumb {
-    background: #818C78; /* Darker background for scrollbar thumb */
+    background: #818C78; 
     border-radius: 8px;
   }
   
   .leaderboard::-webkit-scrollbar-thumb:hover, .latest-games::-webkit-scrollbar-thumb:hover {
-    background: #818C78; /* Darker background on hover */
+    background: #818C78; 
   }
   
-  /* Custom scrollbar styling for Firefox */
+
   .leaderboard, .latest-games {
-    scrollbar-color: #818C78 #818C78; /* thumb color, track color */
+    scrollbar-color: #818C78 #818C78; 
     scrollbar-width: thin;
   }
   
-  .leaderboard h2, .latest-games h2 {
-    color: #d1dbca; /* SaddleBrown */
+  .leaderboard h1, .latest-games h1 {
+    color: #d1dbca;
+    font-family: 'RetroGaming', sans-serif;
+    font-size: 1.9rem;
   }
   
   .leaderboard ul, .latest-games ul {
     list-style: none;
     padding: 0;
     margin: 0;
+
   }
   
   .leaderboard li, .latest-games li {
     margin-bottom: 1rem;
-    padding: 0.5rem;
-    background: #A7B49E; /* BurlyWood */
-    border-radius: 4px;
+    padding: 1rem;
+    background: #A7B49E; 
+    border-radius: 10px;
+    font-family: 'RetroGaming', sans-serif;
+    color: #424740;
+
+  }
+
+  .leaderboard-name, .latest-games-points {
+    font-size: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
   }
   
+  .leaderboard-points, .latest-games-location {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+
   .main-menu {
     width: 40%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    font-family: 'RetroGaming', sans-serif;
+    color: #424740;
+  }
+  
+  .game-title {
+    font-size: 3.0rem;
+    color: #b1bac2;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    padding-top: 0;
   }
   
   .game-modes-title {
     font-size: 1.5rem;
-    color: #A7B49E; /* SaddleBrown */
+    color: #A7B49E; 
     margin-bottom: 1rem;
   }
   
@@ -81,10 +114,12 @@
     padding: 1rem;
     margin: 1rem 0;
     border: none;
-    border-radius: 8px;
+    border-radius: 15px;
     font-size: 1.2rem;
     cursor: pointer;
     color: white;
+    font-family: 'RetroGaming', sans-serif;
+    color: #424740;
   }
   
   .menu-button {
@@ -99,11 +134,13 @@
     margin-top: 1rem;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     background-color: #A7B49E;
     color: white;
     font-size: 1rem;
     cursor: pointer;
+    font-family: 'RetroGaming', sans-serif;
+    color: #424740;
   }
   
   .login-button:hover {
@@ -112,18 +149,21 @@
   
   .playing-as {
     margin-top: 1rem;
+    margin-bottom: 0;
     font-size: 1rem;
-    color: #A7B49E; /* SaddleBrown */
+    color: #A7B49E; 
   }
   .logout-button {
     margin-top: 1rem;
     padding: 0.75rem 1.5rem;
     border: none;
-    border-radius: 4px;
+    border-radius: 15px;
     background-color: #993131;
     color: white;
     font-size: 1rem;
     cursor: pointer;
+    font-family: 'RetroGaming', sans-serif;
+    color: #ffffff;
   }
   
   .logout-button:hover {
@@ -132,5 +172,5 @@
 
   .earth-image {
     z-index: 0;
-    width: 100%;
+    width: 80%;
   }
