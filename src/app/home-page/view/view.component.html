@@ -2,7 +2,7 @@
   <div class="leaderboard">
     <h1>Leaderboard</h1>
     <ul>
-      <li *ngFor="let user of leaderboard ">
+      <li *ngFor="let user of leaderboard | slice:0:5" class="leaderboard-item">
         <p class="leaderboard-name">{{ user.username }}</p>
         <p class="leaderboard-points">Total points: {{ user.totalPoints }}</p>
       </li>
@@ -12,7 +12,7 @@
     <img src="assets/images/Earth-with-title2.png" alt="Earth" class="earth-image" />
     <button class="menu-button" routerLink="/game">DROP ON THE MAP</button>
     <p class="playing-as">Playing as {{ username }}</p>
-    <p class="points"> Total points: {{ points }}</p>
+    <p  *ngIf="username !== 'Guest' || username == null" class="points"> Total points: {{ points }}</p>
     <p *ngIf="username !== 'Guest' || username == null" class="placement"> Leaderboard placement: {{ placement }}</p>
     <button
       *ngIf="username === 'Guest' || username === null"

@@ -25,10 +25,27 @@ export class GamePageService {
     const httpOptions = {
       headers: headers,
     };
-    // console.log(httpOptions);
-    console.log('hello');
+
     return this.http.post(
       `${environment.databaseUrl}/games/${userid}`,
+      game,
+      httpOptions
+    );
+  }
+
+  updateGame(gameId: number, game: Game): Observable<any> {
+    const userid = localStorage.getItem('id');
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      Authorization: 'Bearer ' + token,
+    });
+
+    const httpOptions = {
+      headers: headers,
+    };
+    return this.http.put(
+      `${environment.databaseUrl}/games/${userid}/${gameId}`,
       game,
       httpOptions
     );
