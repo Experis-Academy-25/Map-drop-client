@@ -17,6 +17,8 @@ export class HomeViewComponent {
   latestGamesList: any[] = []; // Array to store the latest games
   username = localStorage.getItem('username');
   leaderboard: any[] = [];
+  points: number = 0;
+  placement: any;
   
 
   constructor(private router: Router) {}
@@ -25,24 +27,56 @@ export class HomeViewComponent {
    
 
     this.checkUsername();
-    // Subscribe to the latestGames observable
-    this.homePageService.getMatchHistory().subscribe({
-      next: (games) => {
-        this.latestGamesList = games.data; // Store the emitted data
-      },
-      error: (err) => {
-        console.error('Error fetching latest games:', err);
-      },
-    });
 
     this.homePageService.getLeaderboard().subscribe({
       next: (users) => {
         this.leaderboard = users.data;
+        for (let i = 0; i < this.leaderboard.length; i++) {
+          if (this.leaderboard[i].username === this.username) {
+            this.placement = i + 1; // Get the index of the user in the leaderboard array
+            console.log(this.placement);
+            break; // Exit the loop once the user is found
+          }
+          else {
+            this.placement = 0; // If the user is not found, set placement to 0
+          }
+        }
       },
       error: (err) => {
         console.error('Error fetching leaderboard:', err);
       },
     });
+
+    if(this.username !=="Guest"){
+        // Subscribe to the latestGames observable
+      this.homePageService.getMatchHistory().subscribe({
+        next: (games) => {
+          this.latestGamesList = games.data; // Store the emitted data
+        },
+        error: (err) => {
+          console.error('Error fetching latest games:', err);
+        },
+      });
+
+      this.homePageService.getUserPoints().subscribe({
+        next: (user) => {
+          this.points = user.data.totalPoints;
+          
+        },
+        error: (err) => {
+          console.error('Error fetching user points:', err);
+        },
+      });
+
+      console.log(this.leaderboard.length);
+      
+    }
+    
+
+   
+
+    
+    
   }
 
 
@@ -58,6 +92,7 @@ export class HomeViewComponent {
     // Refresh the page
     window.location.reload();
   }
+
 
   
 }

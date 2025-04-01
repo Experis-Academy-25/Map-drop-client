@@ -15,7 +15,6 @@ export class LoginService {
   login(login: Login): Observable<any> {
     const password = login.password;
     const username = login.username;
-    console.log('username' + username, 'password' + password);
     // Return the HTTP POST request as an Observable
     return this.http.post(`${environment.databaseUrl}/auth/login`, {
       username,

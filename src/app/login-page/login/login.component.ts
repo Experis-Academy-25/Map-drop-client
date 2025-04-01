@@ -31,8 +31,6 @@ export class LoginComponent {
   
       this.loginService.login({ username, password }).subscribe({
         next: (response: any) => {
-          // Handle successful login
-          console.log('Login successful:', response);
   
           // Save the token and user information to localStorage
           localStorage.setItem('token', response.token); // Save the bearer token
