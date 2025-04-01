@@ -15,30 +15,32 @@
   
   .leaderboard, .latest-games {
     width: 20%;
+    height: 90vh;
     background: #818C78;
-    padding: 1rem;
-    border-radius: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 15rem rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    height: auto;
-    overflow-y: visible;
+
+    overflow-y: scroll;
     z-index: 1;
   }
   
 
 .leaderboard::-webkit-scrollbar, .latest-games::-webkit-scrollbar {
     width: 12px;
+    border-radius: 1rem;
   }
   
   .leaderboard::-webkit-scrollbar-track, .latest-games::-webkit-scrollbar-track {
     background: #818C78; 
-    border-radius: 8px;
+    border-radius: 1rem;
   }
   
   .leaderboard::-webkit-scrollbar-thumb, .latest-games::-webkit-scrollbar-thumb {
     background: #818C78; 
-    border-radius: 8px;
+    border-radius: 1rem;
   }
   
   .leaderboard::-webkit-scrollbar-thumb:hover, .latest-games::-webkit-scrollbar-thumb:hover {
@@ -147,7 +149,7 @@
     background-color: #818C78;
   }
   
-  .playing-as {
+  .playing-as, .placement, .points {
     margin-top: 1rem;
     margin-bottom: 0;
     font-size: 1rem;
