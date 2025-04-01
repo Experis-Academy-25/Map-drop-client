@@ -34,7 +34,6 @@ export class HomeViewComponent {
         for (let i = 0; i < this.leaderboard.length; i++) {
           if (this.leaderboard[i].username === this.username) {
             this.placement = i + 1; // Get the index of the user in the leaderboard array
-            console.log(this.placement);
             break; // Exit the loop once the user is found
           }
           else {
@@ -68,7 +67,7 @@ export class HomeViewComponent {
         },
       });
 
-      console.log(this.leaderboard.length);
+
       
     }
     
