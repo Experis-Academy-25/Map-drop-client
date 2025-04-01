@@ -20,7 +20,7 @@ export class GameViewComponent {
   currentHintIndex: number = 0;
   score: number = 0; // Example score value
   maxViewedHintIndex: number = 0; // Track the highest hint index viewed
-  condition: boolean = true; // Example condition
+
   showModal: boolean = false; // Control the visibility of the modal
   showResultsModal: boolean = false;
 
@@ -33,6 +33,7 @@ export class GameViewComponent {
   panorama: any;
   sv: any;
   position: any;
+  gameId: any;
 
   radius: number = 2000000;
   country: string = countries[Math.floor(Math.random() * countries.length)];
@@ -81,6 +82,25 @@ export class GameViewComponent {
 
     this.initStreetView();
     this.initMap();
+
+    this.gamePageService
+      .createGame({
+        points: 0,
+        distance: 0,
+        location: "Abandoned",
+        longitude_guess: 0,
+        latitude_guess: 0,
+        longitude_real: 0,
+        latitude_real: 0,
+      })
+      .subscribe({
+        next: (response: any) => {
+          this.gameId = response.data.id; // Store the game ID for later use
+          console.log('Game created with ID:', this.gameId);
+          console.log(response);
+        },
+        error: (error) => console.log(error),
+      });
   }
 
   async initializePanorama(): Promise<void> {
@@ -289,9 +309,8 @@ export class GameViewComponent {
     this.initResultsMap();
     const modal = document.getElementById('results-modal') as HTMLElement;
     modal.style.zIndex = '1';
-    console.log(this.score);
     this.gamePageService
-      .createGame({
+      .updateGame(this.gameId, {
         points: this.score,
         distance: this.distance,
         location: this.country,
