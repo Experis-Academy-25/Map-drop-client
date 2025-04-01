@@ -96,8 +96,7 @@ export class GameViewComponent {
       .subscribe({
         next: (response: any) => {
           this.gameId = response.data.id; // Store the game ID for later use
-          console.log('Game created with ID:', this.gameId);
-          console.log(response);
+
         },
         error: (error) => console.log(error),
       });
