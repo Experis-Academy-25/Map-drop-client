@@ -176,3 +176,43 @@
     z-index: 0;
     width: 80%;
   }
+
+  @media only screen and (max-width: 600px) {
+    .home-container {
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: auto;
+    }
+
+    .leaderboard {
+      width: 90%;
+      height: auto;
+      margin-top: 180%;
+      margin-bottom: 1rem;
+      padding: 1rem;
+    }
+
+    .latest-games {
+      width: 90%;
+      height: auto;
+      margin-bottom: 1rem;
+      padding: 1rem;
+    }
+
+    .earth-image {
+      width: 100%;
+      height: auto;
+    }
+
+    .main-menu {
+      width: 90%;
+      margin: 1rem;
+      position: absolute;
+      top: 0;
+    }
+
+    .menu-button {
+      width: 90%;
+    }
+  }

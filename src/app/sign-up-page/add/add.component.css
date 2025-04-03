@@ -20,7 +20,7 @@
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
+    width: 20rem;
     text-align: center;
   }
   
@@ -72,4 +72,14 @@
   
   .login-link a:hover {
     text-decoration: underline;
+  }
+
+  @media only screen and (max-width: 600px) {
+    .signup-form {
+      width: 70%;
+    }
+
+    .form-group input {
+      width: 93%;
+    }
   }
