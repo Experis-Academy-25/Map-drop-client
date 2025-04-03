@@ -353,4 +353,8 @@ export class GameViewComponent {
   cancelExit() {
     this.showModal = false;
   }
+
+  refreshPage() {
+    window.location.reload();
+  }
 }

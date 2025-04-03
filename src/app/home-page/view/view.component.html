@@ -32,9 +32,10 @@
   <div class="latest-games">
     <h1>Latest Games</h1>
     <ul>
-      <li *ngFor="let game of latestGamesList">
+      <li *ngFor="let game of latestGamesList" >
         <p class="latest-games-points">Points: {{ game.points }}</p>
         <p class="latest-games-location">Location: {{ game.location }}</p>
+        <p class="latest-games-createdAt">Played {{ calculateDaysBetweenDates(game.createdAt, todaysDate)}} days ago</p>
       </li>
     </ul>
   </div>
