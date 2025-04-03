@@ -19,6 +19,8 @@ export class HomeViewComponent {
   leaderboard: any[] = [];
   points: number = 0;
   placement: any;
+  todaysDate: Date = new Date(); // Get the current date
+
   
 
   constructor(private router: Router) {}
@@ -65,19 +67,16 @@ export class HomeViewComponent {
         error: (err) => {
           console.error('Error fetching user points:', err);
         },
-      });
-
-
-      
+      });      
     }
-    
-
-   
-
-    
-    
   }
 
+  calculateDaysBetweenDates(date1: any, date2: Date): number {
+    date1 = new Date(date1); // Convert date1 to a Date object
+    const oneDay = 24 * 60 * 60 * 1000; // Milliseconds in one day
+    const diffInTime = Math.abs(date2.getTime() - date1.getTime()); // Difference in milliseconds
+    return Math.floor(diffInTime / oneDay); // Convert to days
+  }
 
   checkUsername() {
     if (!this.username) {
